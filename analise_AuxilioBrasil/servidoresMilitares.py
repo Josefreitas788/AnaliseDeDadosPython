@@ -24,7 +24,7 @@ for piece in chunk_pd:
     piece = piece.drop(colunas_para_retirar_cadastro,axis=1)      
     df_cadastro = piece
     list_df.append(piece)
-    #break
+    break
 
 df_cadastro = pd.concat(list_df)
         
@@ -50,16 +50,20 @@ colunas_para_retirar_remunerada = ['ANO', 'MES', 'CPF',
        'VERBAS INDENIZATÓRIAS REGISTRADAS EM SISTEMAS DE PESSOAL - MILITAR (R$)(*)',
        'VERBAS INDENIZATÓRIAS REGISTRADAS EM SISTEMAS DE PESSOAL - MILITAR (U$)(*)',
        'TOTAL DE VERBAS INDENIZATÓRIAS (R$)(*)',
+       'TOTAL DE VERBAS INDENIZATÓRIAS (U$)(*)',
+       'VERBAS INDENIZATÓRIAS REGISTRADAS EM SISTEMAS DE PESSOAL - MILITAR (U$)(*)',
+       'TOTAL DE VERBAS INDENIZATÓRIAS (R$)(*)',
        'TOTAL DE VERBAS INDENIZATÓRIAS (U$)(*)']
 for piece in chunk_pd:
     piece = piece.drop(colunas_para_retirar_remunerada,axis=1)
+    piece = piece.drop(piece.columns[[-1]],axis=1)
+    piece = piece.drop(piece.columns[[-1]],axis=1)
     df_remuneracao = piece
-    list_df.append(piece)
-    #break
+    list_df.append(piece)     
+    print(piece.columns)
+    break
 df_remuneracao = pd.concat(list_df)
 
-df = pd.merge(df_cadastro,df_remuneracao,how='right',on='Id_SERVIDOR_PORTAL') 
-
-print(df[df.isnull()])
-df = df.iloc[df[(df.isnull().sum(axis=1) >= 1)].index]
-df.to_csv('202207_Militares.csv',index=False)
+df = pd.merge(df_cadastro,df_remuneracao,how='inner',on='Id_SERVIDOR_PORTAL') 
+print(df)
+#df.to_csv('202207_Militares.csv',index=False)
